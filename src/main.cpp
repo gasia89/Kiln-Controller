@@ -3,6 +3,7 @@
 #include "Ct1780ThermocoupleReader.h"
 #include "KilnController.h"
 #include "KilnWebServer.h"
+#include "PreferencesHeatingProfileRepository.h"
 #include "WiFiProvisioningManager.h"
 
 namespace {
@@ -17,7 +18,8 @@ TimeProportionalSsr coilOne(kCoilOnePin, kSsrWindowMs);
 TimeProportionalSsr coilTwo(kCoilTwoPin, kSsrWindowMs);
 KilnController kiln(thermocouples, coilOne, coilTwo);
 WiFiProvisioningManager wifi;
-KilnWebServer web(kiln, wifi);
+PreferencesHeatingProfileRepository profiles;
+KilnWebServer web(kiln, wifi, profiles);
 }
 
 void setup() {

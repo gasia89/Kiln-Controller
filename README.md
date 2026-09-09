@@ -34,6 +34,15 @@ The web API is intentionally small:
 - `POST /api/target?celsius=850`
 - `POST /api/coils?coil=1|2&enabled=0|1&power=0..100`
 - `POST /api/stop`
+- `GET /api/profiles`
+- `GET /api/profile?id=<id>`
+- `POST /api/profiles` with profile form fields and segment fields
+- `DELETE /api/profiles?id=<id>`
+- `POST /api/profiles/import` with a versioned JSON profile document
+- `GET /api/profile/export?id=<id>`
+- `POST /api/profile-run/start?id=<id>`
+- `POST /api/profile-run/pause`
+- `POST /api/profile-run/resume`
 - `GET /api/wifi/status`
 - `GET|POST /api/wifi/scan`
 - `POST /api/wifi/connect` with form fields `ssid` and `password`
