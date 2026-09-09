@@ -3,6 +3,7 @@
 #include "Ct1780ThermocoupleReader.h"
 #include "KilnController.h"
 #include "KilnWebServer.h"
+#include "WiFiProvisioningManager.h"
 
 namespace {
 constexpr uint8_t kThermocoupleDataPin = 4;
@@ -15,23 +16,32 @@ Ct1780ThermocoupleReader thermocouples(kThermocoupleDataPin, kThermocoupleCount)
 TimeProportionalSsr coilOne(kCoilOnePin, kSsrWindowMs);
 TimeProportionalSsr coilTwo(kCoilTwoPin, kSsrWindowMs);
 KilnController kiln(thermocouples, coilOne, coilTwo);
-KilnWebServer web(kiln);
+WiFiProvisioningManager wifi;
+KilnWebServer web(kiln, wifi);
 }
 
 void setup() {
     Serial.begin(115200);
     kiln.begin();
 
-    WiFi.mode(WIFI_AP);
-    WiFi.softAP("KilnManager");
-    Serial.print("Kiln Manager AP: ");
-    Serial.println(WiFi.softAPIP());
+    wifi.begin();
+    Serial.print("Kiln Manager network state: ");
+    Serial.println(wifi.stateName());
+    Serial.print("Kiln Manager IP: ");
+    Serial.println(wifi.ipAddress());
+    if (wifi.isSetupMode()) {
+        Serial.print("Kiln Manager setup SSID: ");
+        Serial.println(wifi.setupSsid());
+        Serial.print("Kiln Manager setup password: ");
+        Serial.println(wifi.setupPassword());
+    }
 
     web.begin();
 }
 
 void loop() {
     const uint32_t now = millis();
+    wifi.update();
     kiln.update(now);
     web.handleClient();
     delay(10);

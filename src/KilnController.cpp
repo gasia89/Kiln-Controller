@@ -6,8 +6,13 @@ KilnController::KilnController(IThermocoupleReader& reader, TimeProportionalSsr&
 void KilnController::begin() {
     coils_[0]->begin();
     coils_[1]->begin();
-    reader_.begin();
+    for (auto& sample : samples_) {
+        sample = {};
+    }
     stop();
+    if (!reader_.begin()) {
+        stop();
+    }
 }
 
 void KilnController::update(uint32_t nowMs) {
